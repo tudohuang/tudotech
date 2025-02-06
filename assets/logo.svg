@@ -1,0 +1,11 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" fill="none">
+    <!-- Background Circle -->
+    <circle cx="100" cy="100" r="90" stroke="#000" stroke-width="10" fill="none" />
+    
+    <!-- Stylized 'T' Shape -->
+    <path d="M 50 70 L 150 70" stroke="#000" stroke-width="12" stroke-linecap="round" />
+    <path d="M 100 70 L 100 140" stroke="#000" stroke-width="12" stroke-linecap="round" />
+    
+    <!-- Tech-Inspired Detail -->
+    <circle cx="100" cy="160" r="8" fill="#000" />
+</svg>
