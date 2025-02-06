@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tudo Tech - 軟硬整合專業</title>
+  <link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+/>
+  <style>
+    /* ================================
+       全域設定
+    ================================ */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      scroll-behavior: smooth;
+    }
+    body {
+      font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: #f5f5f5;
+      color: #333;
+      line-height: 1.6;
+      overflow-x: hidden; /* 避免產生橫向捲動 */
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* 按鈕 (btn) 通用樣式 */
+    .btn {
+      display: inline-block;
+      padding: 0.7rem 1.4rem;
+      background: #1976d2; /* 藍色 */
+      color: #fff;
+      border-radius: 4px;
+      transition: background 0.3s;
+    }
+    .btn:hover {
+      background: #1565c0;
+    }
+
+    /* ================================
+       頂部導覽列 (Navbar)
+    ================================ */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      background-color: #fff;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    }
+    .navbar {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0.8rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #1976d2;
+    }
+    .nav-links {
+      display: flex;
+      gap: 1rem;
+    }
+    .nav-links a {
+      padding: 0.5rem 0.8rem;
+      border-radius: 4px;
+      transition: background 0.3s;
+    }
+    .nav-links a:hover {
+      background: rgba(0,0,0,0.05);
+    }
+
+    /* ================================
+       背景漂浮幾何圖案 (Background Shapes)
+       - 透過 JS 生成與移動
+    ================================ */
+    .floating-shapes {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none; /* 不影響滑鼠互動 */
+      overflow: hidden;
+      z-index: -1; /* 在背景層 */
+    }
+    .shape {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #1976d2;
+      opacity: 0.15;
+      animation: floatShape 10s infinite linear;
+    }
+    @keyframes floatShape {
+      0% {
+        transform: translateY(0);
+      }
+      100% {
+        transform: translateY(-2000px);
+      }
+    }
+
+    /* ================================
+       Hero 區塊 + 幾何背景
+    ================================ */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      background: #e3f2fd; /* 淺藍底 */
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      top: -20%;
+      left: -10%;
+      width: 150%;
+      height: 150%;
+      background: radial-gradient(circle at 30% 50%, #90caf9, transparent 60%),
+                  radial-gradient(circle at 70% 30%, #64b5f6, transparent 60%),
+                  radial-gradient(circle at 50% 80%, #42a5f5, transparent 60%);
+      z-index: -1;
+      opacity: 0.2; 
+    }
+    .hero-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 3rem 1rem 4rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+    }
+    .hero-text {
+      flex: 1 1 320px;
+    }
+    .hero-text h1 {
+      font-size: 2.4rem;
+      margin-bottom: 1rem;
+      font-weight: 600;
+      color: #0d47a1;
+      line-height: 1.2;
+    }
+    .hero-text p {
+      margin-bottom: 1.5rem;
+      color: #333;
+      font-size: 1.1rem;
+    }
+    .hero-img {
+      flex: 1 1 400px;
+      display: flex;
+      justify-content: center;
+    }
+    .hero-img img {
+      max-width: 100%;
+      border-radius: 8px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      transition: transform 0.3s;
+    }
+    .hero-img img:hover {
+      transform: translateY(-3px);
+    }
+    @media (min-width: 992px) {
+      .hero-text h1 {
+        font-size: 2.8rem;
+      }
+    }
+
+    /* ================================
+       特色 / 領域 (Features / Domains)
+    ================================ */
+    .section {
+      padding: 2rem;
+    }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+    .feature-card {
+      background-color: #f9f9f9;
+      border-radius: 8px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .feature-card h3 {
+      margin-top: 0;
+      margin-bottom: 0.8rem;
+    }
+    .section.fade-in {
+      animation: fadeIn 1s ease forwards;
+      opacity: 0;
+    }
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+
+    /* ================================
+       作品 (Projects)
+    ================================ */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+    .project-item {
+      display: flex;
+      flex-wrap: wrap;
+      background: #f9f9f9;
+      border: 1px solid #eee;
+      border-radius: 6px;
+      overflow: hidden;
+      transition: box-shadow 0.3s, transform 0.3s;
+    }
+    .project-item:hover {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      transform: translateY(-2px);
+    }
+    .project-item img {
+      width: 100%;
+      max-width: 300px;
+      object-fit: cover;
+    }
+    .project-info {
+      flex: 1;
+      padding: 1.5rem;
+    }
+    .project-info h3 {
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: #1976d2;
+    }
+    .project-info p {
+      color: #555;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+    .project-links {
+      margin-top: 1rem;
+    }
+    .project-links a {
+      color: #1976d2;
+      font-size: 0.9rem;
+      margin-right: 1rem;
+    }
+    @media (min-width: 768px) {
+      .projects-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    /* ================================
+       CTA 區
+    ================================ */
+    .cta-section {
+      background: linear-gradient(135deg, #42a5f5, #1565c0);
+      color: #fff;
+      text-align: center;
+      padding: 3rem 1rem;
+      margin-top: 4rem;
+      border-radius: 6px 6px 0 0;
+    }
+    .cta-section h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+    .cta-section p {
+      margin-bottom: 2rem;
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.5;
+    }
+
+    /* ================================
+       聯絡 (Contact)
+    ================================ */
+    .contact {
+      text-align: center;
+      margin: 3rem auto;
+      max-width: 600px;
+      padding: 0 1rem;
+    }
+    .contact p {
+      margin-bottom: 2rem;
+      color: #555;
+      line-height: 1.5;
+    }
+
+    /* ================================
+       頁尾 (Footer)
+    ================================ */
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      color: #777;
+      margin-top: 3rem;
+      font-size: 0.9rem;
+    }
+
+    /* ================================
+       Intersection Observer 動畫: 淡入
+    ================================ */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+  </style>
+</head>
+<body>
+  <!-- 背景漂浮幾何圖案 -->
+  <div class="floating-shapes" id="floatingShapes"></div>
+
+  <!-- 頂部導覽列 -->
+  <header>
+    <div class="navbar">
+      <div class="logo">Tudo Tech</div>
+      <ul class="nav-links">
+        <a href="#hero">首頁</a></li>
+        <a href="#domains">領域</a></li>
+        <a href="#projects">作品</a></li>
+        <a href="#contact">聯絡</a></li>
+        <a href="/subm">投稿</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- Hero 區塊 -->
+  <section id="hero" class="hero fade-in">
+    <div class="hero-container">
+      <div class="hero-text">
+        <h1>軟硬整合，打造柔韌實力</h1>
+        <p>
+          不想只局限於軟體或硬體，Tudo Tech 同時專注於 Firmware、PCB 設計、UI/UX、AI 等多個應用開發與研究，在軟硬融合中不斷突破、創新。
+        </p>
+        <a href="#projects" class="btn">探索作品</a>
+      </div>
+        <img src="https://github.com/tudohuang/tudotech/blob/main/assets/logo.svg?raw=true" alt="Hero Image" style="max-width: 70%; height: auto;">
+    </div>
+  </section>
+
+  <!-- 特色 / 領域 (Features / Domains) -->
+  <section id="domains" class="section fade-in">
+    <h2>專業領域</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <h3>Firmware</h3>
+        <p>掌握微控制器與嵌入式系統，從底層韌體到系統整合都能應付自如。</p>
+      </div>
+      <div class="feature-card">
+        <h3>PCB 設計</h3>
+        <p>細緻的電路佈線與電路規劃，保證系統穩定性與高品質運作。</p>
+      </div>
+      <div class="feature-card">
+        <h3>UI / UX</h3>
+        <p>致力於打造簡潔、現代化的用戶友善介面。</p>
+      </div>
+      <div class="feature-card">
+        <h3>AI 應用</h3>
+        <p>深度學習、機器學習與大數據分析，讓各種專案更具智能與效率。</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="tech-stack" class="section fade-in">
+    <h2>技術堆疊</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <h3><i class="fas fa-code"></i> 主要程式語言</h3>
+        <p>C、C++、Python、JavaScript ...</p>
+      </div>
+      <div class="feature-card">
+        <h3><i class="fas fa-cubes"></i> 常用框架 / 函式庫</h3>
+        <p>PyQt6、Electron、Node.js、Pytorch ...</p>
+      </div>
+      <div class="feature-card">
+        <h3><i class="fas fa-tools"></i> 開發工具與軟體</h3>
+        <p>Kicad、PlatformIO、VSCode ...</p>
+      </div>
+      <div class="feature-card">
+        <h3><i class="far fa-lightbulb"></i> 其他技能</h3>
+        <p>版本控制(Git)、全端網站、雲端部署 ...</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 作品 (Projects) -->
+  <section id="projects" class="section fade-in">
+    <h2>代表作品</h2>
+    <div class="projects-grid">
+      <!-- 範例 1: DPL -->
+      <div class="project-item">
+        <img src="https://github.com/tudohuang/tudotech/blob/main/assets/image.png?raw=true" alt="DPL Project">
+        <div class="project-info">
+          <h3>DPL</h3>
+          <p>
+            DPL 結合毫米波雷達技術，能精準、非接觸式量測運動參數，提供物理實驗教學完整解決方案。此專案特別針對教育場域設計，協助教師與學生將理論與實務做結合，靈活應用於力學、訊號處理等課程。
+            <p>技術應用：PCB 設計、Firmware、UI/UX</p>
+
+
+          </p>
+          <p><strong>TISF 2025 工程科 四等獎</strong></p>
+
+          <div class="project-links">
+            <a href="https://github.com/tudohuang/dpl" target="_blank">查看 Repo</a>
+          </div>
+        </div>
+      </div>
+      <!-- 範例 2: PhantomLight -->
+      <div class="project-item">
+        <img src="https://github.com/tudohuang/tudohuang.github.io/blob/main/assests/pht.png?raw=true" alt="PhantomLight Project">
+        <div class="project-info">
+          <h3>PhantomLight</h3>
+          <p>
+            PhantomLight 重新打造日本環球影城類似的「魔杖軌跡辨識系統」，包含 視覺擷取（紅外線攝影）、AI 深度學習（CNN 分辨火咒、水咒等五種魔咒軌跡）、以及 Arduino 實體化互動，成功實現「魔法」般的感官體驗。
+
+          </p>
+          <p><strong>獲 2023 成功高中科展 生活應用科學科 特優；2024 旺宏科學獎 工程組 佳作</strong></p>
+          <div class="project-links">
+            <a href="https://github.com/tudohuang/PhantomLight" target="_blank">查看 Repo</a>
+          </div>
+        </div>
+      </div>
+      <!-- 範例 3: SigmaGO -->
+      <div class="project-item">
+        <img src="https://github.com/tudohuang/tudoweb/blob/main/go.png?raw=true" alt="SigmaGO Project">
+        <div class="project-info">
+          <h3>SigmaGO</h3>
+          <p>
+            SigmaGO 為一款受 AlphaGo、GnuGo 啟發的圍棋 AI。採用無 Pooling 的 CNN 架構，搭配超過 3.4 萬筆 SGF 對局資料（含旋轉、翻轉增強），具備自行判斷合規落子及高強度對弈能力，可擊敗 GnuGo LV5。
+
+          </p>
+          <p><strong>發表於 2024 <a href="https://sitcon.org/2024/poster/">SITCON</a></strong></p>
+
+          <div class="project-links">
+            <a href="https://github.com/tudohuang/sigmago" target="_blank">查看 Repo</a>
+          </div>
+        </div>
+      </div>
+      <!-- 範例 4: YeastRecording -->
+      <div class="project-item">
+        <img src="https://github.com/tudohuang/tudohuang.github.io/blob/main/assests/yeas.png?raw=true" alt="YeastRecording Project">
+        <div class="project-info">
+          <h3>YeastRecording</h3>
+          <p>
+            YeastRecording 利用 Arduino 與 ToF 感測器，實時監控酵母發酵量與體積變化，同時透過 GUI 顯示量測結果，能協助研究者或業者快速掌握發酵狀態。
+          </p>
+          <p><strong><a href="https://sciexplore.colife.org.tw/2024">獲 2024「這樣教我就懂」高中組 第三名<a></strong></p>
+          <div class="project-links">
+            <a href="https://github.com/tudohuang/Yeast-Recording" target="_blank">查看 Repo</a>
+          </div>
+        </div>
+      </div>
+      <!-- 範例 5: CITHUB -->
+      <div class="project-item">
+        <img src="https://github.com/AlgoAICITHUB/CITHUB/blob/main/static/cithub.png?raw=true" alt="CITHUB Project">
+        <div class="project-info">
+          <h3>CITHUB</h3>
+          <p>
+            Cithub 是一個輕鬆的學術 Blog 討論社群，透過網頁平台提供話題討論與協作新體驗。
+
+
+          </p>
+          <div class="project-links">
+            <a href="https://github.com/AlgoAICITHUB/CITHUB" target="_blank">查看 Repo</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA 區塊 -->
+  <section class="cta-section fade-in">
+    <h2>未來展望</h2>
+    <p>
+      除了 Firmware、PCB、UI/UX 與 AI，我們更想進一步跨足IC設計領域。  
+    </p>
+  </section>
+
+  <!-- 聯絡 (Contact) 區塊 -->
+  <section id="contact" class="section fade-in">
+    <div class="contact">
+      <h2>聯絡 Tudo Tech</h2>
+      <p>
+        如果你對我們的專案、服務或未來發展有任何疑問與想法，  
+        歡迎透過以下方式與我們聯繫！
+      </p>
+      <a href="mailto:info@tudotech.com" class="btn">info@tudotech.com</a>
+    </div>
+  </section>
+
+  <!-- 頁尾 -->
+  <footer>
+    <p>© 2025 Tudo Tech. All Rights Reserved.</p>
+  </footer>
+
+  <!-- 
+    JavaScript: Intersection Observer (淡入)
+    + 生成 & 浮動幾何圖案
+  -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      /* --- 1) Intersection Observer: 區塊淡入 --- */
+      const fadeElems = document.querySelectorAll('.fade-in');
+      const observer = new IntersectionObserver((entries, obs) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            obs.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.15 });
+      fadeElems.forEach(el => observer.observe(el));
+    });
+  </script>
+
+  <!-- 為 .visible 狀態添加對應樣式 -->
+  <style>
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</body>
+</html>
